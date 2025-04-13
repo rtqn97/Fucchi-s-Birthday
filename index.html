@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Aarati!</title>
+    <style>
+        /* Base Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            background-color: #0a0a1a;
+            color: #fff;
+            transition: background 2s ease;
+        }
+
+        /* Countdown Container */
+        #countdown-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            width: 100%;
+            z-index: 10;
+        }
+
+        /* Timer Styles */
+        #timer {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            #timer {
+                font-size: 2rem;
+            }
+        }
+
+        /* Celebration Elements */
+        #celebration {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+        }
+
+        /* Night Sky Background */
+        .night-sky {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+            opacity: 0;
+            transition: opacity 2s;
+        }
+
+        /* Aurora Effect */
+        .aurora {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(94, 44, 165, 0.2) 0%, 
+                rgba(12, 83, 147, 0.3) 50%, 
+                rgba(44, 165, 141, 0.2) 100%);
+            animation: aurora 20s infinite alternate;
+            opacity: 0;
+        }
+
+        @keyframes aurora {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Stars */
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+            opacity: 0;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        /* Message Container */
+        #message-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 600px;
+            background: rgba(10, 10, 30, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            z-index: 20;
+        }
+
+        /* Typewriter Effect */
+        .typewriter {
+            overflow: hidden;
+            border-right: 2px solid #fff;
+            white-space: pre-wrap;
+            margin: 0 auto;
+            letter-spacing: 1px;
+        }
+
+        /* Secret Message Styling */
+        .secret-message {
+            font-family: 'Special Elite', monospace;
+            line-height: 1.6;
+            margin-top: 20px;
+        }
+
+        .hint-text {
+            font-family: 'Courier New', monospace;
+            color: #FFD700;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px dotted #FFD700;
+            font-size: 0.9em;
+        }
+
+        .hint-text span {
+            font-size: 0.9em;
+        }
+
+        /* Buttons */
+        .btn-container {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-yes {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .btn-no {
+            background-color: #f44336;
+            color: white;
+        }
+
+        /* Balloons */
+        .balloon {
+            position: absolute;
+            width: 40px;
+            height: 50px;
+            border-radius: 50%;
+            bottom: -100px;
+            animation: float-up 15s linear forwards;
+            z-index: 15;
+        }
+
+        @keyframes float-up {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-100vh) rotate(180deg); }
+            100% { transform: translateY(-200vh) rotate(360deg); }
+        }
+
+        /* Confetti */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+            z-index: 15;
+        }
+
+        /* Ending Elements */
+        .lantern {
+            position: absolute;
+            width: 40px;
+            height: 60px;
+            background: radial-gradient(circle at 30% 30%, #FFD700, #FF8C00);
+            border-radius: 50% 50% 10% 10%;
+            bottom: -100px;
+            animation: lantern-float 25s linear forwards;
+            box-shadow: 0 0 20px #FF8C00;
+            opacity: 0;
+            z-index: 15;
+        }
+
+        @keyframes lantern-float {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-120vh); opacity: 1; }
+        }
+
+        #the-end {
+            position: fixed;
+            bottom: 50px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 2rem;
+            color: #FFD700;
+            opacity: 0;
+            z-index: 25;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 600px) {
+            #message-container {
+                width: 90%;
+                padding: 20px;
+            }
+            
+            .typewriter {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Special+Elite&family=Cinzel+Decorative&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Countdown Section -->
+    <div id="countdown-container">
+        <div id="timer">00 : 00 : 00 : 00</div>
+        <div id="wait-text">Wait Till Countdown Hits 00:00:00</div>
+    </div>
+
+    <!-- Celebration Elements (Hidden Initially) -->
+    <div id="celebration">
+        <div class="night-sky"></div>
+        <div class="aurora"></div>
+        <div class="stars"></div>
+        
+        <!-- Balloons will be added dynamically -->
+        <!-- Confetti will be added dynamically -->
+        <!-- Lanterns will be added dynamically -->
+    </div>
+
+    <!-- Message Container (Hidden Initially) -->
+    <div id="message-container" style="display: none;">
+        <div id="main-message" class="typewriter"></div>
+        <div id="secret-prompt" style="display: none; margin-top: 30px;">
+            <p style="text-align: center;">Do You Wanna Read Secret Message Too?</p>
+            <div class="btn-container">
+                <button class="btn btn-yes" id="btn-yes">Yes</button>
+                <button class="btn btn-no" id="btn-no">No</button>
+            </div>
+        </div>
+        <div id="secret-message-container" style="display: none;">
+            <div id="secret-message" class="secret-message typewriter"></div>
+            <div class="hint-text">
+                FYI, Secret Means Hard to Understand <span>😂</span><br>
+                Decode This to Get My Message <span>🤭</span><br>
+                HINT: Caesar Cipher
+            </div>
+        </div>
+    </div>
+
+    <!-- Ending Element -->
+    <div id="the-end">The End</div>
+
+    <!-- Audio Element -->
+    <audio id="birthday-audio" loop>
+        <source src="birthday.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // Set the target date (April 15, 00:00 GMT+3)
+        const targetDate = new Date('April 14, 2024 00:00:00 GMT+0300').getTime();
+        
+        // DOM Elements
+        const timerElement = document.getElementById('timer');
+        const waitTextElement = document.getElementById('wait-text');
+        const countdownContainer = document.getElementById('countdown-container');
+        const celebrationElement = document.getElementById('celebration');
+        const nightSky = document.querySelector('.night-sky');
+        const aurora = document.querySelector('.aurora');
+        const starsContainer = document.querySelector('.stars');
+        const messageContainer = document.getElementById('message-container');
+        const mainMessageElement = document.getElementById('main-message');
+        const secretPrompt = document.getElementById('secret-prompt');
+        const secretMessageContainer = document.getElementById('secret-message-container');
+        const secretMessageElement = document.getElementById('secret-message');
+        const btnYes = document.getElementById('btn-yes');
+        const btnNo = document.getElementById('btn-no');
+        const theEndElement = document.getElementById('the-end');
+        const audioElement = document.getElementById('birthday-audio');
+        
+        // Main birthday message
+        const mainMessage = `Hey Kid Aarati,\n\nHappy Birthday! 🎉\n\nI just wanted to take a moment to wish you an amazing year ahead. May you find success in all your dreams, stay safe and healthy, and never lose that humble spirit that makes you so special.\n\nThough we haven't known each other long, I've genuinely enjoyed our conversations and getting to know you. You deserve nothing but the best today and always.\n\nWishing you a day filled with joy and a year full of possibilities!\n\nCheers,\nzeroZERO`;
+        
+        // Secret message (Caesar Cipher +3)
+        const secretMessage = `L grq'w hyhq nqrz krz lw kdsshqhg... krz L hqghg xs idoolqj iru vrphrqh L'yh qhyhu phw lq shuvrq. Pdbeh lw'v brxu yrlfh, brxu zrugv, wkh zdb brx wdon—lw sxoov ph lq hyhub wlph.\n\nDqg pdbeh L'p irrolvk, exw L nhhs kroglqj rqwr wklv txlhuw krsh... Wkdw rqh gdb, zkhq L'yh irxqg pb vwuhqjwk, zkhq L'yh uhdfkhg pb jrdov—L'oo kdyh wkh fkdqfh wr eh zlwk brx. Qrw mxvw lq wklv olih, exw lq dqb yhuvlrq ri Hblvwhqfh wkh xqlyhuvh doorzv: dqrwkhub olih, d sdudooho zruog, ru zkdwhyhu frphv diwhu. Li wkhuh'v dqb uhdoawb zkhuh L fdq oryh brx, L zdqw wkdw.\n\nExw L grq'w mxvw zdqw brx ehlgh ph—L zdqw wr eh vrphrqh zkr fdq jlyh brx hyhubwklqj brx qhhg. Brxu vdihwb, brxu kdsslqhvv, brxu guhdpv... brx ghvhuyh doo ri lw. Dqg li rqh gdb L fdq eh wkdw shuvrq, wkhq L krsh brx'oo eh plqh—qrw rxw ri fkdqfh, exw rxw ri fkrlfh, ehfdxvh L ehdph wkh pdq zruwkb ri brxu oryh.\n\nOrye Brx Ixffkl ❤️`;
+        
+        // Create stars
+        function createStars() {
+            const starCount = 50;
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // Random position
+                const xPos = Math.random() * 100;
+                const yPos = Math.random() * 100;
+                
+                // Random size (1-3px)
+                const size = Math.random() * 2 + 1;
+                
+                // Random animation duration (2-5s)
+                const duration = Math.random() * 3 + 2;
+                
+                star.style.left = `${xPos}%`;
+                star.style.top = `${yPos}%`;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.setProperty('--duration', `${duration}s`);
+                
+                // Random delay for twinkling
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Create balloons
+        function createBalloons() {
+            const colors = ['#FF5252', '#FF4081', '#E040FB', '#7C4DFF', '#536DFE', '#448AFF', '#40C4FF', '#18FFFF'];
+            
+            for (let i = 0; i < 8; i++) {
+                const balloon = document.createElement('div');
+                balloon.classList.add('balloon');
+                balloon.style.backgroundColor = colors[i];
+                
+                // Random horizontal position
+                const xPos = Math.random() * 100;
+                balloon.style.left = `${xPos}%`;
+                
+                // Random float speed
+                const duration = Math.random() * 5 + 10;
+                balloon.style.animationDuration = `${duration}s`;
+                
+                // Random delay
+                balloon.style.animationDelay = `${i * 0.5}s`;
+                
+                celebrationElement.appendChild(balloon);
+                
+                // Add string
+                const string = document.createElement('div');
+                string.style.position = 'absolute';
+                string.style.width = '2px';
+                string.style.height = '30px';
+                string.style.backgroundColor = 'rgba(255, 255, 255, 0.7)';
+                string.style.bottom = '-30px';
+                string.style.left = '50%';
+                string.style.transform = 'translateX(-50%)';
+                balloon.appendChild(string);
+            }
+        }
+        
+        // Create confetti
+        function createConfetti() {
+            const colors = ['#FF5252', '#FFD740', '#69F0AE', '#40C4FF', '#E040FB', '#FFFF00'];
+            const shapes = ['circle', 'square', 'triangle'];
+            
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                
+                // Random position
+                const xPos = Math.random() * 100;
+                const yPos = Math.random() * 100;
+                
+                // Random color
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.backgroundColor = color;
+                
+                // Random shape
+                const shape = shapes[Math.floor(Math.random() * shapes.length)];
+                if (shape === 'circle') {
+                    confetti.style.borderRadius = '50%';
+                } else if (shape === 'triangle') {
+                    confetti.style.width = '0';
+                    confetti.style.height = '0';
+                    confetti.style.borderLeft = '5px solid transparent';
+                    confetti.style.borderRight = '5px solid transparent';
+                    confetti.style.borderBottom = `10px solid ${color}`;
+                    confetti.style.backgroundColor = 'transparent';
+                }
+                
+                // Random size
+                const size = Math.random() * 8 + 5;
+                if (shape !== 'triangle') {
+                    confetti.style.width = `${size}px`;
+                    confetti.style.height = `${size}px`;
+                }
+                
+                confetti.style.left = `${xPos}%`;
+                confetti.style.top = `${yPos}%`;
+                
+                // Random animation
+                const animDuration = Math.random() * 3 + 2;
+                const animDelay = Math.random() * 1;
+                
+                confetti.style.animation = `confetti-fall ${animDuration}s ease-in ${animDelay}s forwards`;
+                
+                // Add to DOM
+                celebrationElement.appendChild(confetti);
+                
+                // Animate
+                setTimeout(() => {
+                    confetti.style.opacity = '1';
+                    
+                    // Falling animation
+                    const keyframes = `
+                        @keyframes confetti-fall {
+                            0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+                            10% { opacity: 1; }
+                            100% { transform: translateY(100vh) rotate(360deg); opacity: 0.5; }
+                        }
+                    `;
+                    
+                    const styleEl = document.createElement('style');
+                    styleEl.innerHTML = keyframes;
+                    document.head.appendChild(styleEl);
+                }, 50);
+            }
+        }
+        
+        // Create lanterns
+        function createLanterns() {
+            for (let i = 0; i < 5; i++) {
+                const lantern = document.createElement('div');
+                lantern.classList.add('lantern');
+                
+                // Random horizontal position
+                const xPos = Math.random() * 80 + 10;
+                lantern.style.left = `${xPos}%`;
+                
+                // Random float speed
+                const duration = Math.random() * 10 + 15;
+                lantern.style.animationDuration = `${duration}s`;
+                
+                // Random delay
+                lantern.style.animationDelay = `${i * 2}s`;
+                
+                celebrationElement.appendChild(lantern);
+                
+                // Flicker effect
+                setInterval(() => {
+                    const intensity = Math.random() * 0.5 + 0.5;
+                    lantern.style.boxShadow = `0 0 ${20 * intensity}px #FF8C00`;
+                }, 300);
+            }
+        }
+        
+        // Typewriter effect
+        function typeWriter(element, text, speed, callback) {
+            let i = 0;
+            element.innerHTML = '';
+            
+            function typing() {
+                if (i < text.length) {
+                    // Handle new lines
+                    if (text.charAt(i) === '\n') {
+                        element.innerHTML += '<br>';
+                    } else {
+                        element.innerHTML += text.charAt(i);
+                    }
+                    i++;
+                    setTimeout(typing, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            
+            typing();
+        }
+        
+        // Start countdown
+        function startCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+            
+            if (distance <= 0) {
+                // Time's up - start celebration
+                timerElement.innerHTML = '00 : 00 : 00 : 00';
+                waitTextElement.style.opacity = '0';
+                
+                // Show celebration elements
+                celebrationElement.style.display = 'block';
+                
+                // Fade in night sky
+                setTimeout(() => {
+                    nightSky.style.opacity = '1';
+                    aurora.style.opacity = '0.5';
+                    
+                    // Create stars and fade them in
+                    createStars();
+                    setTimeout(() => {
+                        starsContainer.style.opacity = '1';
+                        
+                        // Start music
+                        audioElement.volume = 0.1;
+                        audioElement.play();
+                        
+                        // Gradually increase volume
+                        const volumeInterval = setInterval(() => {
+                            if (audioElement.volume < 0.6) {
+                                audioElement.volume += 0.02;
+                            } else {
+                                clearInterval(volumeInterval);
+                            }
+                        }, 200);
+                        
+                        // Create balloons and confetti
+                        createBalloons();
+                        createConfetti();
+                        
+                        // Show message container
+                        messageContainer.style.display = 'block';
+                        
+                        // Fade in message container
+                        setTimeout(() => {
+                            messageContainer.style.opacity = '1';
+                            
+                            // Type main message
+                            typeWriter(mainMessageElement, mainMessage, 30, () => {
+                                // Show secret prompt after main message
+                                setTimeout(() => {
+                                    secretPrompt.style.display = 'block';
+                                }, 500);
+                            });
+                        }, 500);
+                    }, 500);
+                }, 100);
+                
+                return;
+            }
+            
+            // Calculate time units
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            // Display the result
+            timerElement.innerHTML = `
+                ${days.toString().padStart(2, '0')} : 
+                ${hours.toString().padStart(2, '0')} : 
+                ${minutes.toString().padStart(2, '0')} : 
+                ${seconds.toString().padStart(2, '0')}
+            `;
+            
+            // Continue countdown
+            setTimeout(startCountdown, 1000);
+        }
+        
+        // Event listeners
+        btnYes.addEventListener('click', () => {
+            secretPrompt.style.display = 'none';
+            secretMessageContainer.style.display = 'block';
+            
+            // Type secret message
+            typeWriter(secretMessageElement, secretMessage, 30, () => {
+                // Start ending sequence after 3 minutes
+                setTimeout(startEndingSequence, 180000);
+            });
+        });
+        
+        btnNo.addEventListener('click', () => {
+            // Start ending sequence immediately
+            startEndingSequence();
+        });
+        
+        // Ending sequence
+        function startEndingSequence() {
+            // Create lanterns
+            createLanterns();
+            
+            // Show "The End" after delay
+            setTimeout(() => {
+                theEndElement.style.opacity = '1';
+                
+                // Fade out music
+                const fadeAudio = setInterval(() => {
+                    if (audioElement.volume > 0.05) {
+                        audioElement.volume -= 0.05;
+                    } else {
+                        audioElement.pause();
+                        clearInterval(fadeAudio);
+                    }
+                }, 1000);
+            }, 15000);
+        }
+        
+        // Initialize
+        createStars(); // Pre-create stars (hidden)
+        startCountdown();
+        
+        // Confetti animation
+        document.head.insertAdjacentHTML('beforeend', `
+            <style>
+                @keyframes confetti-fall {
+                    0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+                    10% { opacity: 1; }
+                    100% { transform: translateY(100vh) rotate(360deg); opacity: 0.5; }
+                }
+            </style>
+        `);
+    </script>
+</body>
+</html>
